@@ -33,21 +33,31 @@
 <body>
 
   <button onclick="openReview()">
-    Write a Google Review2
+    Write a Google Review3
   </button>
 
   <script>
       function openReview() {
     const placeId = "ChIJjVz2SgA5nDkRxCcSsbxT9E0";
 
-    const intentUrl =
+    const appUrl =
       "intent://search.google.com/local/writereview?placeid=" + placeId +
       "#Intent;scheme=https;package=com.google.android.apps.maps;end";
 
-    window.location.href = intentUrl;
+    const webUrl =
+      "https://search.google.com/local/writereview?placeid=" + placeId;
+
+    // Try opening Google Maps
+    window.location.href = appUrl;
+
+    // Fallback to browser after 700ms
+    setTimeout(() => {
+      window.location.href = webUrl;
+    }, 700);
   }
   </script>
 
 </body>
 </html>
+
 
