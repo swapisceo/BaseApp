@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Leave a Review</title>
 
   <style>
@@ -12,7 +13,7 @@
       justify-content: center;
       align-items: center;
       background: #0f0f0f;
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     button {
@@ -22,30 +23,29 @@
       border: none;
       background: #1a73e8;
       color: white;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(0.96);
     }
   </style>
 </head>
 <body>
 
-<button onclick="openReview()">Write a Google Review2</button>
+  <button onclick="openMaps()">
+    Write a Google Review
+  </button>
 
-<script>
-  function openReview() {
-    const reviewUrl =
-      "https://search.google.com/local/writereview?placeid=ChIJjVz2SgA5nDkRxCcSsbxT9E0";
+  <script>
+    function openMaps() {
+      // Proven, stable Google Maps URL
+      const mapsUrl =
+        "https://www.google.com/maps/place/Kapai+Coffee+house+and+Bistro/@26.4729686,80.3006682,17z/data=!4m6!3m5!1s0x399c39004af65c8d:0x4df453bcb11227c4!8m2!3d26.4729638!4d80.3032431!16s%2Fg%2F11vs3tggrs";
 
-    const fallbackMapsUrl =
-      "https://www.google.com/maps/place/Kapai+Coffee+house+and+Bistro/@26.4729686,80.3006682,17z/data=!4m6!3m5!1s0x399c39004af65c8d:0x4df453bcb11227c4!8m2!3d26.4729638!4d80.3032431!16s%2Fg%2F11vs3tggrs";
-
-    // Try review first
-    window.location.href = reviewUrl;
-
-    // Fallback after 800ms
-    setTimeout(() => {
-      window.location.href = fallbackMapsUrl;
-    }, 800);
-  }
-</script>
+      window.location.href = mapsUrl;
+    }
+  </script>
 
 </body>
 </html>
