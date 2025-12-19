@@ -1,23 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leave a Review</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #0f0f0f;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    button {
+      font-size: 20px;
+      padding: 18px 30px;
+      border-radius: 14px;
+      border: none;
+      background: #1a73e8;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+  </style>
 </head>
-<body style="display:flex;justify-content:center;align-items:center;height:100vh">
+<body>
 
-<button onclick="openMaps()" style="font-size:20px;padding:16px">
-  Open in Google Maps6
-</button>
+  <button onclick="openMaps()">
+    Write a Google Review
+  </button>
 
-<script>
-  function openMaps() {
-    window.location.href =
-      "https://www.google.com/maps?cid=0x4df453bcb11227c4";
-  }
-</script>
+  <script>
+    function openMaps() {
+      // Proven, stable Google Maps URL
+      const mapsUrl =
+        "https://www.google.com/maps/place/Kapai+Coffee+house+and+Bistro/@26.4729686,80.3006682,17z/data=!4m6!3m5!1s0x399c39004af65c8d:0x4df453bcb11227c4!8m2!3d26.4729638!4d80.3032431!16s%2Fg%2F11vs3tggrs";
+
+      window.location.href = mapsUrl;
+    }
+  </script>
 
 </body>
 </html>
-
-
-
