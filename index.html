@@ -1,63 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Review Test</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0f0f0f;
-    }
-
-    button {
-      font-size: 20px;
-      padding: 16px 28px;
-      border-radius: 12px;
-      border: none;
-      background: #1a73e8;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:active {
-      transform: scale(0.97);
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
+<body style="display:flex;justify-content:center;align-items:center;height:100vh">
 
-  <button onclick="openReview()">
-    Write a Google Review3
-  </button>
+<button onclick="openMaps()" style="font-size:20px;padding:16px">
+  Open in Google Maps4
+</button>
 
-  <script>
-      function openReview() {
-    const placeId = "ChIJjVz2SgA5nDkRxCcSsbxT9E0";
-
-    const appUrl =
-      "intent://search.google.com/local/writereview?placeid=" + placeId +
-      "#Intent;scheme=https;package=com.google.android.apps.maps;end";
-
-    const webUrl =
-      "https://search.google.com/local/writereview?placeid=" + placeId;
-
-    // Try opening Google Maps
-    window.location.href = appUrl;
-
-    // Fallback to browser after 700ms
-    setTimeout(() => {
-      window.location.href = webUrl;
-    }, 700);
+<script>
+  function openMaps() {
+    window.location.href =
+      "https://www.google.com/maps/place/?q=place_id:ChIJjVz2SgA5nDkRxCcSsbxT9E0";
   }
-  </script>
+</script>
 
 </body>
 </html>
-
 
