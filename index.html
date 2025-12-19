@@ -33,17 +33,21 @@
 <body>
 
   <button onclick="openReview()">
-    Write a Google Review
+    Write a Google Review2
   </button>
 
   <script>
-    function openReview() {
-      const url =
-        "https://search.google.com/local/writereview?placeid=ChIJjVz2SgA5nDkRxCcSsbxT9E0";
+      function openReview() {
+    const placeId = "ChIJjVz2SgA5nDkRxCcSsbxT9E0";
 
-      window.location.href = url;
-    }
+    const intentUrl =
+      "intent://search.google.com/local/writereview?placeid=" + placeId +
+      "#Intent;scheme=https;package=com.google.android.apps.maps;end";
+
+    window.location.href = intentUrl;
+  }
   </script>
 
 </body>
 </html>
+
