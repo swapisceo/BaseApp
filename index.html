@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quick Review</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- FIXED VIEWPORT WRAPPER -->
+  <div class="viewport">
+
+    <!-- YOUR EXISTING APP -->
+    <div class="app">
+      <div class="card">
+
+        <!-- BRAND -->
+        <div class="brand-header">
+          <div class="brand-line"></div>
+          <h1 class="brand-name">Kapai</h1>
+          <p class="brand-tagline">We value your experience.</p>
+        </div>
+
+        <!-- STAR SCREEN -->
+        <div class="screen active" id="screen-stars">
+          <h1 id="starQuestion"></h1>
+          <div class="stars" id="starContainer"></div>
+        </div>
+
+        <!-- TEXT SCREEN -->
+        <div class="screen" id="screen-text">
+          <div class="meta" id="progressMeta">
+            <span class="label">QUESTION</span>
+            <span class="count" id="progressCount"></span>
+          </div>
+          <h1 id="textQuestion"></h1>
+          <textarea id="textAnswer"></textarea>
+          <button class="button" id="textNextBtn">Submit</button>
+        </div>
+
+        <!-- AI REVIEW -->
+        <div class="screen" id="screen-ai">
+          <h1>Your Review</h1>
+          <textarea id="aiReviewBox"></textarea>
+          <button class="button" id="aiDoneBtn" disabled>Done</button>
+        </div>
+
+        <!-- AI THANK YOU -->
+        <div class="screen" id="screen-thanks">
+          <h1>We truly appreciate you</h1>
+          <p class="thanks-text">
+            Your review has been copied.  
+            Please paste it on Google if you’re comfortable.
+          </p>
+          <button class="button" id="googleBtn">Leave Google Review</button>
+        </div>
+
+        <!-- NON-AI END -->
+        <div class="screen" id="screen-nonai">
+          <h1>We’re committed to improving</h1>
+          <p class="thanks-text">
+            Thank you for your feedback.  
+            We’ll work on it and hope to serve you better next time.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+<script>
+/* ================= CONFIG ================= */
+const GOOGLE_URL =
+  "https://search.google.com/local/writereview?placeid=ChIJjVz2SgA5nDkRxCcSsbxT9E0";
+
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbxgudok4SnBZ9CDwJR0hj6_GVg4E8QHfz66_4eXf5ZKjcvPvx1L8IM5rVi9bIQje8AL/exec";
+
+const TOKEN = "review-app-v1";
+
+/* ================= QUESTION MODEL ================= */
+const questions = [
+  { type: "stars", label: "How was your experience?" },     // 0
+  { type: "stars", label: "Rate the Food" },                // 1
+  { type: "stars", label: "Rate the Ambience" },            // 2
+  { type: "stars", label: "Rate the Service" },             // 3
+
+  { type: "text", label: "What was the best part?" },       // 4
+  { type: "text", label: "Did anything stand out?" },      // 5
+  { type: "text", label: "How did this place make you feel?"},//6
+  { type: "text", label: "What would you tell a friend?" },//7
+
+  { type: "ai" },                                           // 8
+  { type: "private", label: "Private feedback" }           // 9
+];
+
+const TEXT_START = 4;
+const AI_INDEX = 8;
+const PRIVATE_INDEX = 9;
+
+/* ================= STATE ================= */
+let currentIndex = 0;
+const answers = new Array(questions.length).fill(null);
+let waitingInterval = null;
+
+/* ================= DOM ================= */
+const screens = {
+  stars: document.getElementById("screen-stars"),
+  text: document.getElementById("screen-text"),
+  ai: document.getElementById("screen-ai"),
+  thanks: document.getElementById("screen-thanks"),
+  nonai: document.getElementById("screen-nonai")
+};
+
+const starQuestion = document.getElementById("starQuestion");
+const starContainer = document.getElementById("starContainer");
+
+const textQuestion = document.getElementById("textQuestion");
+const textAnswer = document.getElementById("textAnswer");
+const progressMeta = document.getElementById("progressMeta");
+const progressCount = document.getElementById("progressCount");
+
+const aiReviewBox = document.getElementById("aiReviewBox");
+const aiDoneBtn = document.getElementById("aiDoneBtn");
+
+textAnswer.addEventListener("input", () => autoResize(textAnswer));
+aiReviewBox.addEventListener("input", () => autoResize(aiReviewBox));
+
+
+/* ================= UTIL ================= */
+function showScreen(screen) {
+  Object.values(screens).forEach(s => s.classList.remove("active"));
+  screen.classList.add("active");
+}
+
+function initStars() {
+  starContainer.innerHTML = "";
+  for (let i = 1; i <= 5; i++) {
+    const s = document.createElement("span");
+    s.textContent = "★";
+    s.className = "star";
+    s.onclick = () => handleStar(i);
+    starContainer.appendChild(s);
+  }
+}
+
+function replayAnimation(el) {
+  el.classList.remove("active");
+
+  // Force browser reflow
+  void el.offsetWidth;
+
+  el.classList.add("active");
+}
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
+}
+
+
+
+function handleStar(value) {
+answers[currentIndex] = value;
+
+// If we just answered the LAST star question
+if (currentIndex === 3) {
+  const overall = answers[0];
+
+  if (overall < 4) {
+    currentIndex = PRIVATE_INDEX;
+  } else {
+    currentIndex = TEXT_START;
+  }
+
+  render();
+  return;
+}
+
+// Otherwise, just go to next star question
+currentIndex++;
+render();
+
+}
+
+
+/* ================= RENDER ================= */
+function render() {
+  const q = questions[currentIndex];
+  if (!q) return;
+
+  if (q.type === "stars") {
+    starQuestion.innerText = q.label;
+initStars();
+showScreen(screens.stars);
+replayAnimation(screens.stars);
+  }
+
+if (q.type === "text") {
+  textQuestion.innerText = q.label;
+  textAnswer.value = "";
+  autoResize(textAnswer);   // 👈 ADD
+
+  progressMeta.style.display = "flex";
+  progressCount.innerText =
+    `${currentIndex - TEXT_START + 1}/${AI_INDEX - TEXT_START}`;
+
+  showScreen(screens.text);
+  replayAnimation(screens.text);
+}
+
+
+if (q.type === "private") {
+  textQuestion.innerText = q.label;
+  textAnswer.value = "";
+  autoResize(textAnswer);   // 👈 ADD
+
+  progressMeta.style.display = "none";
+  showScreen(screens.text);
+}
+
+
+  if (q.type === "ai") {
+    generateAI();
+  }
+}
+
+/* ================= TEXT FLOW ================= */
+document.getElementById("textNextBtn").onclick = () => {
+  answers[currentIndex] = textAnswer.value.trim();
+
+  // 🔚 Private feedback ends the flow
+  if (currentIndex === PRIVATE_INDEX) {
+    saveData();
+    showScreen(screens.nonai);
+    return;
+  }
+
+  currentIndex++;
+  render();
+};
+
+
+/* ================= AI ================= */
+async function generateAI() {
+showScreen(screens.ai);
+  aiDoneBtn.disabled = true;
+
+  aiReviewBox.disabled = true;   // 👈 disable USER input
+  aiReviewBox.value = "";        // clear old content
+
+  startWaiting();   
+
+  let reviewText = "";
+
+  try {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        token: TOKEN,
+        payload: {
+          ratings: {
+            overall: answers[0],
+            food: answers[1],
+            ambience: answers[2],
+            service: answers[3]
+          },
+          responses: answers.slice(TEXT_START, AI_INDEX)
+        }
+      })
+    });
+
+    const data = await res.json();
+    reviewText = data.review || "";
+  } catch {
+    reviewText = "Thank you for your feedback.";
+  }
+
+
+stopWaiting();
+
+aiReviewBox.value = reviewText;
+autoResize(aiReviewBox);
+
+aiReviewBox.disabled = false;   // 👈 enable editing
+aiDoneBtn.disabled = false;
+
+}
+
+/* ================= WAITING ================= */
+function startWaiting() {
+  let dots = 0;
+  aiReviewBox.value = "Writing your review";
+  waitingInterval = setInterval(() => {
+    dots = (dots + 1) % 4;
+    aiReviewBox.value = "Writing your review" + ".".repeat(dots);
+    autoResize(aiReviewBox);
+  }, 500);
+}
+
+
+function stopWaiting() {
+  clearInterval(waitingInterval);
+}
+
+/* ================= FINAL ================= */
+aiDoneBtn.onclick = () => {
+  answers[AI_INDEX] = aiReviewBox.value.trim();
+  navigator.clipboard.writeText(answers[AI_INDEX]);
+
+  saveData();
+  showScreen(screens.thanks);
+
+  setTimeout(() => {
+    window.open(GOOGLE_URL, "_blank");
+  }, 5000);
+};
+
+document.getElementById("googleBtn").onclick = () =>
+  window.open(GOOGLE_URL, "_blank");
+
+/* ================= SAVE ================= */
+function saveData() {
+  const payload = {
+    flowType: answers[0] >= 4 ? "AI_FLOW" : "NON_AI_FLOW",
+
+    ratings: {
+      overall: answers[0],
+      food: answers[1],
+      ambience: answers[2],
+      service: answers[3]
+    },
+
+    responses: [
+      answers[4], // best part
+      answers[5], // standout
+      answers[6], // feeling
+      answers[7], // recommend
+      answers[8], // ai review
+      answers[9]  // private feedback
+    ],
+
+    completedAt: new Date().toISOString()
+  };
+
+  fetch(API_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      token: TOKEN,
+      type: "save",
+      payload
+    })
+  });
+
+  console.log(payload);
+}
+
+
+/* ================= START ================= */
+render();
+</script>
+
+</body>
+</html>
