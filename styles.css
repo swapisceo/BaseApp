@@ -19,7 +19,7 @@ html, body {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: 36px 24px;
+  padding: 48px 32px;
   position: fixed;
   box-sizing: border-box;
   inset: 0;
@@ -162,5 +162,6 @@ textarea:disabled {
   color: #999;
   cursor: not-allowed;
 }
+
 
 
