@@ -1,0 +1,204 @@
+* {
+  box-sizing: border-box;
+  font-family: Georgia, serif;
+}
+
+body {
+  margin: 0;
+  background: #f5f2ee;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* VIEWPORT */
+.viewport {
+  min-height: 100dvh;              /* real mobile viewport */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 16px;                   /* mobile-safe padding */
+  box-sizing: border-box;
+
+  position: relative;              /* NOT fixed */
+}
+
+
+/* CARD */
+.card {
+  /* DESKTOP / TABLET CANVAS */
+  width: 650px;
+  max-width: 650px;
+
+  padding: 36px;
+  margin: 0 auto;
+
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.1);
+
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
+  overflow-y: auto;
+}
+
+/* MOBILE — explicitly lock width again */
+@media (max-width: 700px) {
+  .card {
+    width: 360px;
+    max-width: 360px;
+
+    padding: 24px;
+    border-radius: 18px;
+  }
+}
+
+
+
+
+/* BRAND */
+.brand-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.brand-line {
+  width: 36px;
+  height: 3px;
+  background: #6b5b3e;
+  margin: 0 auto 14px;
+}
+
+.brand-name {
+  margin: 0;
+  font-size: 34px;
+  color: #6e5e40;
+}
+/* DEFAULT (desktop / tablet) */
+.brand-name {
+  font-size: 36px;
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+  .brand-name {
+    font-size: 27px;
+  }
+}
+
+
+.brand-tagline {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #777;
+}
+.section {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* SCREENS */
+.screen {
+  display: none;
+  text-align: center; /* 👈 EVERYTHING CENTERED */
+}
+
+.screen.active {
+  display: block;
+  animation: fadeUp 400ms ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* HEADINGS */
+h1 {
+  margin: 0 0 10px;
+  line-height: 1.2;
+}
+@media (max-width: 700px) {
+  h1 {
+    font-size: 27px;
+    line-height: 1;
+  }
+}
+/* META */
+.meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+/* STARS */
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 28px;
+  margin-top: 8px;
+}
+
+.star {
+  color: #cfcac0;
+  cursor: pointer;
+}
+
+.star.active {
+  color: #b89b5e;
+}
+
+/* TEXTAREA */
+textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+
+  resize: none;        /* no manual resize */
+  overflow: hidden;    /* no scrollbar */
+
+  font-size: 15px;
+  line-height: 1.5;
+
+  text-align: left;    /* 👈 content readable */
+  margin: 0 auto;      /* 👈 box centered */
+}
+
+/* BUTTON */
+.button {
+  width: 100%;
+  margin: 18px auto 0;
+  padding: 14px;
+  border-radius: 12px;
+  background: #b9ad98;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* THANK YOU TEXT */
+.thanks-text {
+  font-size: 15px;
+  color: #555;
+  line-height: 1.6;
+}
+textarea:disabled {
+  background: #f6f6f6;
+  color: #999;
+  cursor: not-allowed;
+}
